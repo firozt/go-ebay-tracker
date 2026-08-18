@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"go-ebay-tracker/internal/utils"
 	"io"
 	"net/http"
 	"net/url"
@@ -14,9 +15,9 @@ import (
 // holds response type for
 // oauth post request to obtain initial tokens
 type EbayOAuthResponse struct {
-	AccessToken string        `json:"access_token"`
-	TokenType   string        `json:"token_type"`
-	ExpiresIn   time.Duration `json:"expires_in"`
+	AccessToken string `json:"access_token"`
+	TokenType   string `json:"token_type"`
+	ExpiresIn   int64  `json:"expires_in"` // seconds
 }
 
 // obtains tokens from ebay OAuth, documented in
@@ -25,16 +26,16 @@ type EbayOAuthResponse struct {
 // returns token manager, from which token can be obtained safely
 // function may panic given this fails as its crucial for application to work
 func OAuthEbay(clientID string, clientSecret string) *TokenManager {
-	secret := fmt.Sprintf(clientID, ":", clientSecret)
-	secretBase64 := "Basic " + base64.StdEncoding.EncodeToString([]byte(secret))
+	secret := fmt.Sprintf("%s:%s", clientID, clientSecret)
+	secretBase64 := base64.StdEncoding.EncodeToString([]byte(secret))
 
 	response, err := sendEbayOAuthPostRequest(secretBase64)
 
 	if err != nil {
-		panic("Failed during OAuth2 initialisation, could not obtain tokens")
+		panic(fmt.Sprintf("Failed during OAuth2 initialisation, could not obtain tokens %s", err))
 	}
 
-	TokenManager := NewTokenManager(secretBase64, response.AccessToken, response.ExpiresIn)
+	TokenManager := NewTokenManager(secretBase64, response.AccessToken, time.Duration(response.ExpiresIn))
 
 	return TokenManager
 }
@@ -45,16 +46,28 @@ func RefreshToken(b64secret string) (EbayOAuthResponse, error) {
 }
 
 // request shape
-// POST /identity/v1/oauth2/token
+//
+// URL -> POST /identity/v1/oauth2/token (domain is specified by devmode)
+// =========== HEADER ==========
 // Host: api.ebay.com
 // Content-Type: application/x-www-form-urlencoded
 // Authorization: Basic base64(client_id:client_secret)
+// =========== PAYLOAD =========
+// Set grant_type to client_credentials.
+// Set scope to the URL-encoded space-separated list of the scopes needed for the interfaces you call with the access token.
+// For details, see Specifying scopes when minting access tokens.
+// ============================= 
 //
-// attatch secret base64 encoded
-// grant_type=client_credentials&scope=https://api.ebay.com/oauth/api_scope
+// for more info docs are: https://developer.ebay.com/develop/guides/sell/authorization
 func sendEbayOAuthPostRequest(b64Secret string) (EbayOAuthResponse, error) {
-	postURL := "https://api.sandbox.ebay.com/identity/v1/oauth2/token" // sandbox/dev
-	// postURL := "https://api.ebay.com/identity/v1/oauth2/token" // prod
+	// get which posturl to use
+	var postURL string
+
+	if utils.IsDevMode() {
+		postURL = "https://api.sandbox.ebay.com/identity/v1/oauth2/token" // sandbox/dev
+	} else {
+		postURL = "https://api.ebay.com/identity/v1/oauth2/token" // prod
+	}
 
 	body := strings.NewReader(url.Values{
 		"grant_type": {"client_credentials"},

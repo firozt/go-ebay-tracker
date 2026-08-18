@@ -1,13 +1,12 @@
 package ebayapi
-
-// this files deals with token access
-// and token refreshing logic
-
 import (
 	"sync"
 	"time"
 )
 
+// thread safe, immutable structure that abstracts
+// away refreshing tokens, auto refreshes if trying to
+// use token after expiry
 type TokenManager struct {
 	b64secret string
 	token     string
@@ -25,6 +24,8 @@ func NewTokenManager(b64secret string, token string, expiresIn time.Duration) *T
 	}
 }
 
+// check if token is expired if so refresh token
+// then return new value otherwise just return token
 func (T *TokenManager) getToken() string {
 	T.mu.Lock()
 	defer T.mu.Unlock()
@@ -39,7 +40,7 @@ func (T *TokenManager) getToken() string {
 
 		// update times
 		T.token = response.AccessToken
-		T.expiresAt = time.Now().Add(response.ExpiresIn)
+		T.expiresAt = time.Now().Add(time.Duration(response.ExpiresIn))
 	}
 
 	return T.token
