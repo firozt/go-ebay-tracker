@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"go-ebay-tracker/internal/ebayapi"
+	"go-ebay-tracker/internal/ebay"
 	"os"
 
 	"github.com/joho/godotenv"
