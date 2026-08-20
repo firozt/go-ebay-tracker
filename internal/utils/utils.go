@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -54,4 +55,14 @@ func PanicIfNotExist(key string) string {
 	}
 
 	return envVal
+}
+
+
+
+func ElapsedTime(start time.Time) string {
+	d := time.Since(start)
+	days := int(d.Hours()) / 24
+	hours := int(d.Hours()) % 24
+	minutes := int(d.Minutes()) % 60
+	return fmt.Sprintf("%d day(s), %02d hour(s) %02d minute(s)", days, hours, minutes)
 }
