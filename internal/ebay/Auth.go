@@ -1,4 +1,4 @@
-package ebayapi
+package ebay
 
 import (
 	"encoding/base64"
@@ -17,7 +17,7 @@ import (
 type EbayOAuthResponse struct {
 	AccessToken string `json:"access_token"`
 	TokenType   string `json:"token_type"`
-	ExpiresIn   int64  `json:"expires_in"` // seconds
+	ExpiresIn   int  `json:"expires_in"` // seconds
 }
 
 // obtains tokens from ebay OAuth, documented in
@@ -35,7 +35,7 @@ func OAuthEbay(clientID string, clientSecret string) *TokenManager {
 		panic(fmt.Sprintf("Failed during OAuth2 initialisation, could not obtain tokens %s", err))
 	}
 
-	TokenManager := NewTokenManager(secretBase64, response.AccessToken, time.Duration(response.ExpiresIn))
+	TokenManager := NewTokenManager(secretBase64, response.AccessToken, response.ExpiresIn)
 
 	return TokenManager
 }
@@ -61,13 +61,7 @@ func RefreshToken(b64secret string) (EbayOAuthResponse, error) {
 // for more info docs are: https://developer.ebay.com/develop/guides/sell/authorization
 func sendEbayOAuthPostRequest(b64Secret string) (EbayOAuthResponse, error) {
 	// get which posturl to use
-	var postURL string
-
-	if utils.IsDevMode() {
-		postURL = "https://api.sandbox.ebay.com/identity/v1/oauth2/token" // sandbox/dev
-	} else {
-		postURL = "https://api.ebay.com/identity/v1/oauth2/token" // prod
-	}
+	postURL:=utils.TokenURL() 
 
 	body := strings.NewReader(url.Values{
 		"grant_type": {"client_credentials"},
