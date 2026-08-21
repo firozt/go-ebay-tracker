@@ -1,6 +1,7 @@
 package ebay
 
 import (
+	"log"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -42,7 +43,7 @@ func OAuthEbay(clientID string, clientSecret string) *TokenManager {
 
 // resfresh token, skip calculation logic
 func RefreshToken(b64secret string) (EbayOAuthResponse, error) {
-	fmt.Println("[LOGS], token expired, refreshing token...")
+	log.Println("[LOGS], token expired, refreshing token...")
 	return sendEbayOAuthPostRequest(b64secret)
 }
 

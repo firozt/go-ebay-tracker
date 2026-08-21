@@ -1,8 +1,9 @@
 package ebay
 
 import (
-	"encoding/json"
 	"fmt"
+	"encoding/json"
+	"log"
 	"go-ebay-tracker/internal/alerts"
 	"go-ebay-tracker/internal/utils"
 	"io"
@@ -82,14 +83,12 @@ func SearchMusicMagpie2DS(token string) (*SearchResponse, error) {
 		alerts.SendDiscordMessage(discordWebhook, fmt.Sprintf("New listing for 2ds xl from musicmagpie @everyone %s", firstItemURL))
 
 		NTFYUrl := utils.PanicIfNotExist("NTFY_URL")
-		alerts.SendNtfyAlert(
-			NTFYUrl,
-			"New 2DS Listing!",
+		alerts.SendNtfyAlert(NTFYUrl, "New 2DS Listing!",
 			fmt.Sprintf("New 2ds xl listing for musicmagpie! -> %s", firstItemURL),
 		)
 
 		if err := alerts.TriggerHomeMiniAlert(alerts.HomeMiniAlertRequest{}); err != nil {
-			fmt.Println("[ERROR] home mini alert failed:", err)
+			log.Println("[ERROR] home mini alert failed:", err)
 		}
 	}
 

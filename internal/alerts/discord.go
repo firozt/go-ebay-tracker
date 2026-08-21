@@ -1,15 +1,16 @@
 package alerts
 
 import (
+	"fmt"
 	"bytes"
 	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
 )
 
 // requires channel webhook url
 func SendDiscordMessage(webhookURL, message string) error {
-	fmt.Printf("[LOGS] Sending alert to discord\n")
+	log.Printf("[LOGS] Sending alert to discord\n")
 
 	payload := WebhookPayload{Content: message}
 	body, err := json.Marshal(payload)

@@ -1,14 +1,14 @@
 package alerts
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 	"strings"
 )
 
 // requires NTFY url, title and message
 func SendNtfyAlert(NTFYUrl string, title string, message string) error {
-	fmt.Printf("[LOGS] Sending alert to Ntfy\n")
+	log.Printf("[LOGS] Sending alert to Ntfy\n")
 	req, err := http.NewRequest("POST",NTFYUrl, strings.NewReader(message))
 	if err != nil {
 		return err
