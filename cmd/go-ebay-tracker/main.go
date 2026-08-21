@@ -3,6 +3,7 @@ package main
 import (
 	"go-ebay-tracker/internal/ebay"
 	"go-ebay-tracker/internal/utils"
+	"io"
 	"log"
 	"os"
 	"time"
@@ -16,18 +17,18 @@ func setupLogger() (*os.File, error) {
 		return nil, err
 	}
 
-	log.SetOutput(logFile)
+	multiWriter := io.MultiWriter(os.Stdout, logFile)
+	log.SetOutput(multiWriter)
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 
 	return logFile, nil
 }
 
-
 func main() {
 	log.Println("================== running go-ebay-tracker ===================")
 	log.Println("Initialsiing application")
 
-	log.Println("[LOGS] Setting up logger (current working dir -> get.log)")
+	log.Println("[LOGS] Setting up logger (current working dir -> go-ebay-tracker.log)")
 	logFile, err := setupLogger()
 	if err != nil {
 		panic("Error unable to setup logger")
@@ -55,7 +56,6 @@ func main() {
 	if err != nil {
 		log.Printf("error within the search loop:\n%+v\n", err)
 	}
-
 
 	log.Println("================== stopping go-ebay-tracker ==================")
 }
