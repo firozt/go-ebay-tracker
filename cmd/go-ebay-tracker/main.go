@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"go-ebay-tracker/internal/ebay"
 	"go-ebay-tracker/internal/utils"
 	"log"
