@@ -87,8 +87,11 @@ func SearchMusicMagpie2DS(token string) (*SearchResponse, error) {
 			"New 2DS Listing!",
 			fmt.Sprintf("New 2ds xl listing for musicmagpie! -> %s", firstItemURL),
 		)
+
+		if err := alerts.TriggerHomeMiniAlert(alerts.HomeMiniAlertRequest{}); err != nil {
+			fmt.Println("[ERROR] home mini alert failed:", err)
+		}
 	}
 
 	return &result, nil
 }
-
