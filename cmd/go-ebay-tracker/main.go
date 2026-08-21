@@ -1,9 +1,10 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"go-ebay-tracker/internal/ebay"
 	"go-ebay-tracker/internal/utils"
+	"log"
 	"os"
 	"time"
 
@@ -27,9 +28,17 @@ func main() {
 	log.Println("================== running go-ebay-tracker ===================")
 	log.Println("Initialsiing application")
 
+	log.Println("[LOGS] Setting up logger (current working dir -> get.log)")
+	logFile, err := setupLogger()
+	if err != nil {
+		panic("Error unable to setup logger")
+	}
+	defer logFile.Close()
+	log.Println("[LOGS] Logger setup successfully!")
+
 	// loading env vars
 	log.Println("[LOGS] Loading environment variables...")
-	err := godotenv.Load()
+	err = godotenv.Load()
 	if err != nil {
 		panic("Error loading .env file")
 	}
