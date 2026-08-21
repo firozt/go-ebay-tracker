@@ -16,6 +16,7 @@ type HomeMiniAlertRequest struct {
 }
 
 func TriggerHomeMiniAlert(req HomeMiniAlertRequest) error {
+	req.Repeat = 15
 	payload, err := json.Marshal(req)
 	if err != nil {
 		return err
