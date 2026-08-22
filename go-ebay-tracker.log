@@ -1,0 +1,14 @@
+2026/08/21 18:04:38 main.go:36: [LOGS] Logger setup successfully!
+2026/08/21 18:04:38 main.go:39: [LOGS] Loading environment variables...
+2026/08/21 18:04:38 main.go:46: [LOGS] Environemnet variables loaded!
+2026/08/21 18:04:38 main.go:49: [LOGS] Obtaining initial tokens...
+2026/08/21 18:04:38 main.go:51: [LOGS] Tokens recieved!
+2026/08/21 18:04:38 main.go:52: Initialsiing completed successfully
+2026/08/21 18:04:38 main.go:67: ========================= ITERATION 1 =========================
+2026/08/21 18:04:38 main.go:70: [LOGS] Making search request...
+2026/08/21 18:04:39 main.go:75: found 0 listings
+2026/08/21 18:04:39 main.go:79: Total elapsed time - 0 day(s), 00 hour(s) 00 minute(s)
+2026/08/21 18:05:39 main.go:67: ========================= ITERATION 2 =========================
+2026/08/21 18:05:39 main.go:70: [LOGS] Making search request...
+2026/08/21 18:05:39 main.go:75: found 0 listings
+2026/08/21 18:05:39 main.go:79: Total elapsed time - 0 day(s), 00 hour(s) 01 minute(s)
