@@ -19,6 +19,7 @@ type HomeMiniAlertRequest struct {
 func TriggerHomeMiniAlert(req HomeMiniAlertRequest) error {
 	log.Printf("[LOGS] Sending alert to Home Mini (127.0.0.1:5005/alert)\n")
 	req.Repeat = 15
+	req.Volume = 100
 	payload, err := json.Marshal(req)
 	if err != nil {
 		return err
